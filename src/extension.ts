@@ -87,27 +87,43 @@ function extractEnumMemberName(lineText: string): string | undefined {
 function findEnumMemberValue(document: vscode.TextDocument, startLine: number, memberName: string): number {
   const enumDeclarationEndLine = findEnumDeclarationEndLine(document, startLine);
   if (enumDeclarationEndLine > startLine && enumDeclarationEndLine !== -1) {
-    let memberValue: number | undefined;
+    let memberValue: number = -1;
     let hasReachedMember = false;
+    let keyMap = new Map<string, number>();
+
     for (let line = startLine + 1; line < enumDeclarationEndLine; line++) {
       const lineText = document.lineAt(line).text.trim();
       const match = lineText.match(/^(\w+)\s*(?:=\s*)?(.*)/);
       if (match) {
         const currentMemberName = match[1];
         const currentValue = match[2].trim();
-        if (currentMemberName === memberName) {
-          if (currentValue && currentValue !== ',') {
-            return parseEnumMemberValue(currentValue);
-          } else {
-            return memberValue !== undefined ? memberValue + 1 : 0;
-          }
-        }
         if (!currentValue || currentValue === ',') {
           // hasReachedMember = true;
-          memberValue = memberValue !== undefined ? memberValue + 1 : 0;
-        } else {
+          memberValue = memberValue < 0 ? 0 : memberValue + 1;
+          // memberValue = memberValue + 1;
+        } else if (Number(parseEnumMemberValue(currentValue))) {
           memberValue = parseEnumMemberValue(currentValue);
+        } else {  // handle currentValue assign as Enum Name
+          let searchKey = removeCommasFromString(currentValue);
+          let keyFind = keyMap.has(searchKey) ? keyMap.get(searchKey) : 0;
+          memberValue = keyFind ? keyFind : 0;
         }
+
+        // if finding match member Return
+        if (currentMemberName === memberName) {
+            // return memberValue !== undefined ? memberValue + 1 : 0;
+            return memberValue;
+        }
+
+        // store key
+        keyMap.set(currentMemberName, memberValue);
+
+        // if (!currentValue || currentValue === ',') {
+        //   // hasReachedMember = true;
+        //   memberValue = memberValue !== undefined ? memberValue + 1 : 0;
+        // } else {
+        //   memberValue = parseEnumMemberValue(currentValue);
+        // }
       }
     }
   }
@@ -115,7 +131,9 @@ function findEnumMemberValue(document: vscode.TextDocument, startLine: number, m
   return -1;
 }
 
-
+function removeCommasFromString(input: string): string {
+  return input.replace(/,/g, '');
+}
 
 function findEnumDeclarationEndLine(document: vscode.TextDocument, startLine: number): number {
   const lineCount = document.lineCount;

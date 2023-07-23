@@ -28,7 +28,8 @@ First release of this extension.
 
 ### 0.0.2
 
-Add Color for number
+[New] Add Color for number
+[Fix] Enum assign values from other Enum
 
 ---
 

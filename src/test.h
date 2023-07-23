@@ -1,5 +1,5 @@
 enum aaa{
-    asd,
-    asdd,
-    asddd
+    a,
+    b = a,
+    c
 };
