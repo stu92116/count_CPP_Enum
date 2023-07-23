@@ -22,9 +22,13 @@ None found yet.
 
 Users appreciate release notes as you update your extension.
 
-### 1.0.0
+### 0.0.1
 
 First release of this extension.
+
+### 0.0.2
+
+Add Color for number
 
 ---
 

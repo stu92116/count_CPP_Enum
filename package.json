@@ -2,7 +2,7 @@
   "name": "show-enum",
   "displayName": "show_Enum",
   "description": "show the Enum Number in c++ header",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.80.0"
   },
