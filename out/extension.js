@@ -17,7 +17,8 @@ function activate(context) {
                     // return new vscode.Hover("Enum Number : " + enumMemberValue.toString());
                     const markdownContent = new vscode.MarkdownString(`Enum Number : `);
                     markdownContent.supportHtml = true;
-                    markdownContent.appendMarkdown('<span style="color:#d5e39d;">' + enumMemberValue.toString() + '</span>');
+                    markdownContent.appendMarkdown('<span style="color:#d5e39d;">' + enumMemberValue.toString() +
+                        " /  " + numberToHex(enumMemberValue) + '</span>');
                     // markdownContent.appendText();
                     return new vscode.Hover(markdownContent);
                 }
@@ -51,7 +52,8 @@ function getEnumMemberValue(document, position) {
 function findEnumDeclarationStartLine(document, line) {
     while (line >= 0) {
         const lineText = document.lineAt(line).text;
-        if (lineText.includes('enum')) {
+        // lineText.includes('enum ')
+        if (containsEnumDeclaration(lineText) && !startsWithComment(lineText)) {
             return line;
         }
         line--;
@@ -75,10 +77,17 @@ function findEnumMemberValue(document, startLine, memberName) {
         let keyMap = new Map();
         for (let line = startLine + 1; line < enumDeclarationEndLine; line++) {
             const lineText = document.lineAt(line).text.trim();
+            // handle comments
+            if (startsWithComment(lineText)) {
+                continue;
+            }
             const match = lineText.match(/^(\w+)\s*(?:=\s*)?(.*)/);
             if (match) {
                 const currentMemberName = match[1];
                 const currentValue = match[2].trim();
+                // if (!currentValue) {
+                //   continue;
+                // }
                 if (!currentValue || currentValue === ',') {
                     // hasReachedMember = true;
                     memberValue = memberValue < 0 ? 0 : memberValue + 1;
@@ -126,5 +135,15 @@ function findEnumDeclarationEndLine(document, startLine) {
 function parseEnumMemberValue(value) {
     // Handle hexadecimal and decimal values
     return value.startsWith('0x') ? parseInt(value, 16) : parseInt(value);
+}
+function startsWithComment(input) {
+    const trimmedInput = input.trim(); // Remove leading and trailing spaces
+    return /^(\/\/|\*|\/)/.test(trimmedInput);
+}
+function containsEnumDeclaration(input) {
+    return /\benum\s+\w*\s*{/.test(input);
+}
+function numberToHex(num) {
+    return `0x${num.toString(16).toUpperCase()}`;
 }
 //# sourceMappingURL=extension.js.map

@@ -18,7 +18,9 @@ export function activate(context: vscode.ExtensionContext) {
           
           const markdownContent = new vscode.MarkdownString(`Enum Number : `);
           markdownContent.supportHtml = true;
-          markdownContent.appendMarkdown('<span style="color:#d5e39d;">' + enumMemberValue.toString() + '</span>');
+          
+          markdownContent.appendMarkdown('<span style="color:#d5e39d;">' + enumMemberValue.toString() + 
+                                         " /  " + numberToHex(enumMemberValue) + '</span>');
           // markdownContent.appendText();
           
           return new vscode.Hover(markdownContent);
@@ -63,7 +65,8 @@ function findEnumDeclarationStartLine(document: vscode.TextDocument, line: numbe
   while (line >= 0) {
     const lineText = document.lineAt(line).text;
 
-    if (lineText.includes('enum')) {
+    // lineText.includes('enum ')
+    if (containsEnumDeclaration(lineText) && !startsWithComment(lineText)) {
       return line;
     }
 
@@ -93,10 +96,16 @@ function findEnumMemberValue(document: vscode.TextDocument, startLine: number, m
 
     for (let line = startLine + 1; line < enumDeclarationEndLine; line++) {
       const lineText = document.lineAt(line).text.trim();
+      // handle comments
+      if (startsWithComment(lineText)) { continue; }
+  
       const match = lineText.match(/^(\w+)\s*(?:=\s*)?(.*)/);
       if (match) {
         const currentMemberName = match[1];
         const currentValue = match[2].trim();
+        // if (!currentValue) {
+        //   continue;
+        // }
         if (!currentValue || currentValue === ',') {
           // hasReachedMember = true;
           memberValue = memberValue < 0 ? 0 : memberValue + 1;
@@ -151,4 +160,17 @@ function findEnumDeclarationEndLine(document: vscode.TextDocument, startLine: nu
 function parseEnumMemberValue(value: string): number {
   // Handle hexadecimal and decimal values
   return value.startsWith('0x') ? parseInt(value, 16) : parseInt(value);
+}
+
+function startsWithComment(input: string): boolean {
+  const trimmedInput = input.trim(); // Remove leading and trailing spaces
+  return /^(\/\/|\*|\/)/.test(trimmedInput);
+}
+
+function containsEnumDeclaration(input: string): boolean {
+  return /\benum\s+\w*\s*{/.test(input);
+}
+
+function numberToHex(num: number): string {
+  return `0x${num.toString(16).toUpperCase()}`;
 }
