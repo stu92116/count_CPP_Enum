@@ -7,14 +7,23 @@ export function activate(context: vscode.ExtensionContext) {
     provideHover(document, position, token) {
       const wordRange = document.getWordRangeAtPosition(position);
       const word = document.getText(wordRange);
-      console.log('Hover triggered for word:', word);
+      // console.log('Hover triggered for word:', word);
 
       // Check if the word is an enum member
       if (isEnumMember(document, word)) {
         const enumMemberValue = getEnumMemberValue(document, position);
         if (enumMemberValue !== undefined && enumMemberValue !== null) {
           // console.log('enumMemberValue:', enumMemberValue);
-          return new vscode.Hover("Enum Number : " + enumMemberValue.toString());
+          // return new vscode.Hover("Enum Number : " + enumMemberValue.toString());
+          
+          const markdownContent = new vscode.MarkdownString(`Enum Number : `);
+          markdownContent.supportHtml = true;
+          markdownContent.appendMarkdown('<span style="color:#d5e39d;">' + enumMemberValue.toString() + '</span>');
+          // markdownContent.appendText();
+          
+          return new vscode.Hover(markdownContent);
+          
+          
         }
       }
 
