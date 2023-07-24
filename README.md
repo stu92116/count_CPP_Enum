@@ -43,6 +43,10 @@ Release notes
 
 [New] Add Icon
 
+### 0.0.6
+
+[New] Support for value assign with bit operation  
+
 ---
 
 **Enjoy!**

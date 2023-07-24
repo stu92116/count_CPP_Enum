@@ -113,10 +113,10 @@ function findEnumMemberValue(document: vscode.TextDocument, startLine: number, m
           // hasReachedMember = true;
           memberValue = memberValue < 0 ? 0 : memberValue + 1;
           // memberValue = memberValue + 1;
-        } else if (Number(parseEnumMemberValue(currentValue))) {
+        } else if (Number(tryGetNumber(currentValue))) {
           memberValue = parseEnumMemberValue(currentValue);
         } else {  // handle currentValue assign as Enum Name
-          let searchKey = removeCommasFromString(currentValue);
+          let searchKey = removeStringAfterCommas(currentValue);
           let keyFind = keyMap.has(searchKey) ? keyMap.get(searchKey) : 0;
           memberValue = keyFind ? keyFind : 0;
         }
@@ -143,8 +143,8 @@ function findEnumMemberValue(document: vscode.TextDocument, startLine: number, m
   return -1;
 }
 
-function removeCommasFromString(input: string): string {
-  return input.replace(/,/g, '');
+function removeStringAfterCommas(input: string): string {
+  return input.split(',')[0];
 }
 
 function findEnumDeclarationEndLine(document: vscode.TextDocument, startLine: number): number {
@@ -177,6 +177,16 @@ function containsEnumDeclaration(input: string): boolean {
 
 function numberToHex(num: number): string {
   return `0x${num.toString(16).toUpperCase()}`;
+}
+
+function tryGetNumber(formula: string): string {
+  try {
+    // 使用 eval 函数求值
+    return evaluate(formula.replace(/,/g, '')) as string;
+  } catch (error) {
+    // console.error('公式求值出错:', error);
+    return 'undefined';
+  }
 }
 
 function evaluateFormula(formula: string): number {

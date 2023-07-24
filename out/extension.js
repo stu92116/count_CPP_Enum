@@ -97,11 +97,11 @@ function findEnumMemberValue(document, startLine, memberName) {
                     memberValue = memberValue < 0 ? 0 : memberValue + 1;
                     // memberValue = memberValue + 1;
                 }
-                else if (Number(parseEnumMemberValue(currentValue))) {
+                else if (Number(tryGetNumber(currentValue))) {
                     memberValue = parseEnumMemberValue(currentValue);
                 }
                 else { // handle currentValue assign as Enum Name
-                    let searchKey = removeCommasFromString(currentValue);
+                    let searchKey = removeStringAfterCommas(currentValue);
                     let keyFind = keyMap.has(searchKey) ? keyMap.get(searchKey) : 0;
                     memberValue = keyFind ? keyFind : 0;
                 }
@@ -123,8 +123,8 @@ function findEnumMemberValue(document, startLine, memberName) {
     }
     return -1;
 }
-function removeCommasFromString(input) {
-    return input.replace(/,/g, '');
+function removeStringAfterCommas(input) {
+    return input.split(',')[0];
 }
 function findEnumDeclarationEndLine(document, startLine) {
     const lineCount = document.lineCount;
@@ -150,6 +150,16 @@ function containsEnumDeclaration(input) {
 }
 function numberToHex(num) {
     return `0x${num.toString(16).toUpperCase()}`;
+}
+function tryGetNumber(formula) {
+    try {
+        // 使用 eval 函数求值
+        return (0, mathjs_1.evaluate)(formula.replace(/,/g, ''));
+    }
+    catch (error) {
+        // console.error('公式求值出错:', error);
+        return 'undefined';
+    }
 }
 function evaluateFormula(formula) {
     try {
