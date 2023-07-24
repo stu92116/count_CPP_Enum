@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = void 0;
 const vscode = require("vscode");
+const mathjs_1 = require("mathjs");
 function activate(context) {
     console.log('Congratulations, your extension "enum-member-counter" is now active!');
     let disposable = vscode.languages.registerHoverProvider('cpp', {
@@ -137,7 +138,8 @@ function findEnumDeclarationEndLine(document, startLine) {
 }
 function parseEnumMemberValue(value) {
     // Handle hexadecimal and decimal values
-    return value.startsWith('0x') ? parseInt(value, 16) : parseInt(value);
+    return evaluateFormula(value);
+    // return value.startsWith('0x') ? parseInt(value, 16) : parseInt(value);
 }
 function startsWithComment(input) {
     const trimmedInput = input.trim(); // Remove leading and trailing spaces
@@ -148,5 +150,15 @@ function containsEnumDeclaration(input) {
 }
 function numberToHex(num) {
     return `0x${num.toString(16).toUpperCase()}`;
+}
+function evaluateFormula(formula) {
+    try {
+        // 使用 eval 函数求值
+        return (0, mathjs_1.evaluate)(formula.replace(/,/g, ''));
+    }
+    catch (error) {
+        // console.error('公式求值出错:', error);
+        return 0;
+    }
 }
 //# sourceMappingURL=extension.js.map

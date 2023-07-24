@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { evaluate } from 'mathjs';
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "enum-member-counter" is now active!');
@@ -161,7 +162,8 @@ function findEnumDeclarationEndLine(document: vscode.TextDocument, startLine: nu
 
 function parseEnumMemberValue(value: string): number {
   // Handle hexadecimal and decimal values
-  return value.startsWith('0x') ? parseInt(value, 16) : parseInt(value);
+  return evaluateFormula(value);
+  // return value.startsWith('0x') ? parseInt(value, 16) : parseInt(value);
 }
 
 function startsWithComment(input: string): boolean {
@@ -175,4 +177,14 @@ function containsEnumDeclaration(input: string): boolean {
 
 function numberToHex(num: number): string {
   return `0x${num.toString(16).toUpperCase()}`;
+}
+
+function evaluateFormula(formula: string): number {
+  try {
+    // 使用 eval 函数求值
+    return evaluate(formula.replace(/,/g, '')) as number;
+  } catch (error) {
+    // console.error('公式求值出错:', error);
+    return 0;
+  }
 }

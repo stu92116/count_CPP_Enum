@@ -3,7 +3,7 @@
   "displayName": "CPP Enum Counter",
   "publisher": "stu92116",
   "description": "Show the Enum Number in c++ header",
-  "version": "0.0.5",
+  "version": "0.0.6.1",
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.70.0"
@@ -51,6 +51,8 @@
     "mocha": "^10.2.0",
     "typescript": "^5.1.3"
   },
-  "repository": "https://github.com/stu92116/count_CPP_Enum.git"
-
+  "repository": "https://github.com/stu92116/count_CPP_Enum.git",
+  "dependencies": {
+    "mathjs": "^11.9.1"
+  }
 }
