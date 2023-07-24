@@ -39,6 +39,10 @@ Release notes
 [New] Add Color for number
 [Fix] Enum assign values from other Enum
 
+### 0.0.5
+
+[New] Add Icon
+
 ---
 
 **Enjoy!**

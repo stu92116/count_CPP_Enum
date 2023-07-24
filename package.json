@@ -1,8 +1,10 @@
 {
   "name": "show-enum",
-  "displayName": "show_Enum",
-  "description": "show the Enum Number in c++ header",
-  "version": "0.0.2",
+  "displayName": "CPP Enum Counter",
+  "publisher": "stu92116",
+  "description": "Show the Enum Number in c++ header",
+  "version": "0.0.5",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.70.0"
   },

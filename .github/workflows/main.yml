@@ -37,14 +37,42 @@ jobs:
             Release ${{ github.ref }}
           draft: false
           prerelease: false
-          
-      - name: Upload .vsix file
-        uses: actions/upload-artifact@v2
+    
+      - name: Upload .vsix file as asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: vsix
-          path: "*.vsix"
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: "*.vsix"
+          asset_name: ${{ github.ref }}".vsix"
+          asset_content_type: application/octet-stream
 
-      # - name: Release
+      # - name: Upload .vsix file
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: vsix
+      #     path: "*.vsix"
+
+      # - name: Publish Release
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     files: ${{steps.identify-package.outputs.name}}
+
+      - name: Publish Extension
+        env:
+          VSCE_TOKEN: ${{ secrets.SCERET_AZURE_TOKEN }}
+        run: |
+          npx vsce publish --packagePath "*.vsix" --pat $VSCE_TOKEN
+
+
+      # - name: Upload .vsix file
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: vsix
+      #     path: "*.vsix"
+
+      # - name: Publish Release
       #   uses: softprops/action-gh-release@v1
       #   with:
       #     files: ${{steps.identify-package.outputs.name}}
