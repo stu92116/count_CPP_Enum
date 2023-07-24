@@ -106,7 +106,9 @@ function findEnumMemberValue(document: vscode.TextDocument, startLine: number, m
         // if (!currentValue) {
         //   continue;
         // }
-        if (!currentValue || currentValue === ',') {
+        if (!currentValue && currentMemberName === memberName) {
+          memberValue = memberValue < 0 ? 0 : memberValue + 1;
+        } else if (currentValue === ',') {
           // hasReachedMember = true;
           memberValue = memberValue < 0 ? 0 : memberValue + 1;
           // memberValue = memberValue + 1;
