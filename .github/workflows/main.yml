@@ -1,4 +1,4 @@
-name: CD
+name: Build and Publish Release
 
 on:
   push:
@@ -12,12 +12,37 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       # ...
-      - uses: philipparndt/vsce-action
+      - name: Setup Node.js
+        uses: node:16-slim
+
+      - name: Install dependencies
+        run: npm install && npm i -g @vscode/vsce
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Package extension
+        run: vsce package
+
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.SCERET_TOKEN }}
         with:
-          args: "package --allow-star-activation"
-      - run: echo "name=$(ls | grep vsix | sort | tail -n 1)" >> $GITHUB_OUTPUT
-        id: identify-package
-      - name: Release
-        uses: softprops/action-gh-release@v1
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+          
+      - name: Upload .vsix file
+        uses: actions/upload-artifact@v2
         with:
-          files: ${{steps.identify-package.outputs.name}}
+          name: vsix
+          path: "*.vsix"
+
+      # - name: Release
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     files: ${{steps.identify-package.outputs.name}}
