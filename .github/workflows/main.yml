@@ -24,7 +24,7 @@ jobs:
         run: npm run build
 
       - name: Package extension
-        run: vsce package
+        run: vsce package -o CPP_Enum_Counter.vsix
 
       - name: Create release
         id: create_release
@@ -46,8 +46,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: "*.vsix"
-          asset_name: ${{ github.ref }}".vsix"
+          asset_path: ./CPP_Enum_Counter.vsix
+          asset_name: CPP_Enum_Counter.vsix
           asset_content_type: application/octet-stream
 
       # - name: Upload .vsix file
@@ -65,7 +65,7 @@ jobs:
         env:
           VSCE_TOKEN: ${{ secrets.SCERET_AZURE_TOKEN }}
         run: |
-          npx vsce publish --packagePath "*.vsix" --pat $VSCE_TOKEN
+          npx vsce publish --packagePath ./CPP_Enum_Counter.vsix --pat $VSCE_TOKEN
 
 
       # - name: Upload .vsix file
