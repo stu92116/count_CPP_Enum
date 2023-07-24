@@ -1,7 +1,8 @@
-# show-enum
+# Enum Counter for CPP
 
 This extension simply parses the enum values in c++ headers file and show when the mouse hovers over the enum.
 
+[![Build and Publish Release](https://github.com/stu92116/count_CPP_Enum/actions/workflows/main.yml/badge.svg)](https://github.com/stu92116/count_CPP_Enum/actions/workflows/main.yml)
 ## Features
 
 Show the enum values even if the enum have been specified certain number.
@@ -46,6 +47,10 @@ Release notes
 ### 0.0.6
 
 [New] Support for value assign with bit operation  
+
+### 0.0.7
+
+[Fix] Bug fixes for enum assignments comes with comments.  
 
 ---
 
