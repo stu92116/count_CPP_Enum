@@ -3,7 +3,7 @@
   "displayName": "CPP Enum Counter",
   "publisher": "stu92116",
   "description": "Show the Enum Number in c++ header",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.70.0"
@@ -18,8 +18,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "show-enum.helloWorld",
-        "title": "Hello World"
+        "command": "show-enum.findEnumMember",
+        "title": "Find Enum Member Name"
       }
     ],
     "licenses": [
@@ -27,7 +27,26 @@
         "type": "MIT",
         "url": "https://github.com/your-username/your-repository/blob/master/LICENSE"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Enum Member Counter",
+      "properties": {
+        "enumMemberCounter.displayFormat": {
+          "type": "array",
+          "default": ["Dec", "Hex"],
+          "items":{
+            "type": "string",
+            "enum": ["Dec", "Hex", "Bin"]
+          },
+          "description": "Choose the display format(s) for enum member values"
+        },
+        "enumMemberCounter.color": {
+          "type": "string",
+          "default": "#d5e39d",
+          "description": "The color used to highlight enum member values"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
