@@ -11,8 +11,15 @@
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "C",
+    "C++"
+  ],
   "activationEvents": [
-    "onLanguage:cpp,onLanguage:c"
+      "onLanguage:c",
+      "onLanguage:cpp",
+      "onLanguage:objective-c",
+      "onLanguage:objective-cpp"
   ],
   "main": "./out/extension.js",
   "contributes": {

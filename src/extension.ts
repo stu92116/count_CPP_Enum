@@ -8,7 +8,7 @@ export function activate(context: vscode.ExtensionContext) {
   let displayFormats = config.get<string[]>('displayFormat') || ["Dec"];
   let color = config.get<string>('color') || "#d5e39d";
 
-  let disposable = vscode.languages.registerHoverProvider('cpp', {
+  let disposable = vscode.languages.registerHoverProvider(['cpp','c'], {
     provideHover(document, position, token) {
       const wordRange = document.getWordRangeAtPosition(position);
       const word = document.getText(wordRange);
@@ -176,19 +176,11 @@ function findEnumMemberValue(document: vscode.TextDocument,
 
         // if finding match member Return
         if (currentMemberName === memberName) {
-            // return memberValue !== undefined ? memberValue + 1 : 0;
             return memberValue;
         }
 
         // store key
         keyMap.set(currentMemberName, memberValue);
-
-        // if (!currentValue || currentValue === ',') {
-        //   // hasReachedMember = true;
-        //   memberValue = memberValue !== undefined ? memberValue + 1 : 0;
-        // } else {
-        //   memberValue = parseEnumMemberValue(currentValue);
-        // }
       }
     }
   }
@@ -217,7 +209,6 @@ function findEnumDeclarationEndLine(document: vscode.TextDocument,
 function parseEnumMemberValue(value: string): number {
   // Handle hexadecimal and decimal values
   return evaluateFormula(value);
-  // return value.startsWith('0x') ? parseInt(value, 16) : parseInt(value);
 }
 
 function startsWithComment(input: string): boolean {
