@@ -3,7 +3,7 @@
   "displayName": "CPP Enum Counter",
   "publisher": "stu92116",
   "description": "Show the Enum Number in c++ header",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.65.0"
