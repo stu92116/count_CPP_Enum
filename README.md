@@ -79,6 +79,10 @@ Release notes
   
 [New]  Support custom command below, which can find certain Enum Member in cursor scope of enum.
 
+### 0.0.9
+
+[Fix] Bug fixes for last enum non-assign values parsing Error
+
 ---
 
 **Enjoy!**

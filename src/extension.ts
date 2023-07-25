@@ -315,7 +315,8 @@ function findEnumMemberName(document: vscode.TextDocument,
     const currentMemberName = match[1];
     const currentValue = match[2].trim();
 
-    if (!currentValue && memberValue === targetValue) {
+    if (!currentValue && 
+        (memberValue < 0 ? 0 : memberValue + 1) === targetValue) {
       memberValue = memberValue < 0 ? 0 : memberValue + 1;
     } else if (currentValue === ',') {
       memberValue = memberValue < 0 ? 0 : memberValue + 1;
