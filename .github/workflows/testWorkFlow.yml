@@ -39,7 +39,7 @@ jobs:
   creating_release:
     needs: build
     runs-on: ubuntu-latest
-    if: success() && needs.build.outputs.version_changed == 'true'
+    if: success()
     steps:
       - name: Package extension
         run: vsce package -o CPP_Enum_Counter.vsix
