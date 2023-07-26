@@ -284,6 +284,6 @@ function findEnumMemberName(document, position, targetValue) {
         // store key
         keyMap.set(currentMemberName, memberValue);
     }
-    return [undefined, undefined];
+    return [undefined, undefined]; // None
 }
 //# sourceMappingURL=extension.js.map

@@ -328,5 +328,5 @@ function findEnumMemberName(document: vscode.TextDocument,
     keyMap.set(currentMemberName, memberValue);
   }
 
-  return [undefined, undefined];
+  return [undefined, undefined]; // None
 }
