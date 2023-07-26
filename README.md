@@ -83,6 +83,10 @@ Release notes
 
 [Fix] Bug fixes for last enum non-assign values parsing Error
 
+### 0.0.14
+
+[Optimization] Optimize install & launch time
+
 ---
 
 **Enjoy!**
