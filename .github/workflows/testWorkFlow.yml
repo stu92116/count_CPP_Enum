@@ -28,7 +28,7 @@ jobs:
   creating_release:
     needs: build
     runs-on: ubuntu-latest
-    if: success()
+    if: success() && shell('git diff HEAD~1 HEAD -- package.json | grep "version"') != ''
     steps:
       - name: Package extension
         run: vsce package -o CPP_Enum_Counter.vsix
@@ -60,7 +60,7 @@ jobs:
   deploy:
     needs: [build, creating_release]
     runs-on: ubuntu-latest
-    if: success()
+    if: success() && shell('git diff HEAD~1 HEAD -- package.json | grep "version"') != ''
     steps:
       - name: Checkout
         uses: actions/checkout@v2
