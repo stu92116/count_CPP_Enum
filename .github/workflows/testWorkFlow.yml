@@ -1,10 +1,11 @@
 name: (test) Build and Publish Release
 
 on:
+  workflow_dispatch: # Add manual trigger
 #   push:
 #     tags:
 #       - "v*.*.*"
-  workflow_dispatch: # Add manual trigger
+
 
 jobs:
   build:
@@ -12,6 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
       # ...
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -23,57 +26,29 @@ jobs:
 
       - name: Build extension
         run: npm run build
-        
-      - name: Set VERSION_CHANGED environment variable
-        run: |
-          if git diff HEAD~1 HEAD -- package.json | grep "version"; then
-            echo "VERSION_CHANGED=true" >> $GITHUB_ENV
-          else
-            echo "VERSION_CHANGED=false" >> $GITHUB_ENV
-          fi
-
-
-  creating_release:
-    needs: build
-    runs-on: ubuntu-latest
-    if: success() && env.VERSION_CHANGED == 'true'
-    steps:
+  
       - name: Package extension
         run: vsce package -o CPP_Enum_Counter.vsix
-  
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.SCERET_TOKEN }}
+        
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Release ${{ github.ref }}
-          draft: false
+          token: ${{ secrets.SCERET_TOKEN }}
+          files: CPP_Enum_Counter.vsix
           prerelease: false
-
-      - name: Upload .vsix file as asset
-        id: upload_asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./CPP_Enum_Counter.vsix
-          asset_name: CPP_Enum_Counter.vsix
-          asset_content_type: application/octet-stream
-
-  deploy:
-    needs: [build, creating_release]
-    runs-on: ubuntu-latest
-    if: success() && env.VERSION_CHANGED == 'true'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+          
+      - name: Check if version changed
+        id: check_version_changed
+        run: |
+          if git diff HEAD~1 HEAD -- package.json | grep "version"; then
+            echo "version_changed=true" >> $GITHUB_ENV
+          else
+            echo "version_changed=false" >> $GITHUB_ENV
+          fi
 
       - name: Publish Extension
+        if: env.version_changed == 'true'
         env:
           VSCE_TOKEN: ${{ secrets.SCERET_AZURE_TOKEN }}
         run: |
