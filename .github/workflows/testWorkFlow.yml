@@ -1,4 +1,4 @@
-name: Build and Publish Release
+name: (test) Build and Publish Release
 
 on:
   push:
@@ -23,12 +23,20 @@ jobs:
 
       - name: Build extension
         run: npm run build
+        
+      - name: Set VERSION_CHANGED environment variable
+        run: |
+          if git diff HEAD~1 HEAD -- package.json | grep "version"; then
+            echo "VERSION_CHANGED=true" >> $GITHUB_ENV
+          else
+            echo "VERSION_CHANGED=false" >> $GITHUB_ENV
+          fi
 
 
   creating_release:
     needs: build
     runs-on: ubuntu-latest
-    if: success() && shell('git diff HEAD~1 HEAD -- package.json | grep "version"') != ''
+    if: success() && env.VERSION_CHANGED == 'true'
     steps:
       - name: Package extension
         run: vsce package -o CPP_Enum_Counter.vsix
@@ -60,7 +68,7 @@ jobs:
   deploy:
     needs: [build, creating_release]
     runs-on: ubuntu-latest
-    if: success() && shell('git diff HEAD~1 HEAD -- package.json | grep "version"') != ''
+    if: success() && env.VERSION_CHANGED == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
