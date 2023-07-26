@@ -1,0 +1,72 @@
+name: Build and Publish Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch: # Add manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      # ...
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install && npm i -g @vscode/vsce
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Package extension
+        run: vsce package -o CPP_Enum_Counter.vsix
+
+  creating_release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.SCERET_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload .vsix file as asset
+        id: upload_asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./CPP_Enum_Counter.vsix
+          asset_name: CPP_Enum_Counter.vsix
+          asset_content_type: application/octet-stream
+
+  deploy:
+    needs: [build, creating_release]
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Publish Extension
+        env:
+          VSCE_TOKEN: ${{ secrets.SCERET_AZURE_TOKEN }}
+        run: |
+          echo "Runing Deploy"
+        # npx vsce publish --packagePath ./CPP_Enum_Counter.vsix --pat $VSCE_TOKEN
