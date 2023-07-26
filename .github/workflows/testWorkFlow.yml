@@ -77,4 +77,4 @@ jobs:
           VSCE_TOKEN: ${{ secrets.SCERET_AZURE_TOKEN }}
         run: |
           echo "Runing Deploy"
-          npx vsce publish --packagePath ./CPP_Enum_Counter.vsix --pat $VSCE_TOKEN
+        # npx vsce publish --packagePath ./CPP_Enum_Counter.vsix --pat $VSCE_TOKEN
