@@ -24,14 +24,15 @@ jobs:
       - name: Build extension
         run: npm run build
 
-      - name: Package extension
-        run: vsce package -o CPP_Enum_Counter.vsix
 
   creating_release:
     needs: build
     runs-on: ubuntu-latest
     if: success()
     steps:
+      - name: Package extension
+        run: vsce package -o CPP_Enum_Counter.vsix
+  
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
