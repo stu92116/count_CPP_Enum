@@ -1,10 +1,11 @@
 name: (test) Build and Publish Release
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
   workflow_dispatch: # Add manual trigger
+#   push:
+#     tags:
+#       - "v*.*.*"
+
 
 jobs:
   build:
