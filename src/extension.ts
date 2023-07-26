@@ -9,7 +9,7 @@ export function activate(context: vscode.ExtensionContext) {
   let color = config.get<string>('color') || "#d5e39d";
 
   let disposable = vscode.languages.registerHoverProvider(['cpp','c'], {
-    provideHover(document, position, token) {
+    provideHover(document, position, token) { 
       const wordRange = document.getWordRangeAtPosition(position);
       const word = document.getText(wordRange);
       // console.log('Hover triggered for word:', word);

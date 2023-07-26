@@ -37,30 +37,6 @@ jobs:
           token: ${{ secrets.SCERET_TOKEN }}
           files: CPP_Enum_Counter.vsix
           prerelease: false
-  
-#       - name: Create release
-#         id: create_release
-#         uses: actions/create-release@v1
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.SCERET_TOKEN }}
-#         with:
-#           tag_name: ${{ github.ref }}
-#           release_name: Release ${{ github.ref }}
-#           body: |
-#             Release ${{ github.ref }}
-#           draft: false
-#           prerelease: false
-
-#       - name: Upload .vsix file as asset
-#         id: upload_asset
-#         uses: actions/upload-release-asset@v1
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         with:
-#           upload_url: ${{ steps.create_release.outputs.upload_url }}
-#           asset_path: ./CPP_Enum_Counter.vsix
-#           asset_name: CPP_Enum_Counter.vsix
-#           asset_content_type: application/octet-stream
           
       - name: Check if version changed
         id: check_version_changed
