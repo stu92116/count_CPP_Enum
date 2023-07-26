@@ -26,22 +26,7 @@ jobs:
 
       - name: Build extension
         run: npm run build
-        
-      - name: Check if version changed
-        id: check_version_changed
-        run: |
-          if git diff HEAD~1 HEAD -- package.json | grep "version"; then
-            echo "::set-output name=version_changed::true"
-          else
-            echo "::set-output name=version_changed::false"
-          fi
-
-
-  creating_release:
-    needs: build
-    runs-on: ubuntu-latest
-    if: success()
-    steps:
+  
       - name: Package extension
         run: vsce package -o CPP_Enum_Counter.vsix
   
@@ -68,18 +53,20 @@ jobs:
           asset_path: ./CPP_Enum_Counter.vsix
           asset_name: CPP_Enum_Counter.vsix
           asset_content_type: application/octet-stream
-
-  deploy:
-    needs: [build, creating_release]
-    runs-on: ubuntu-latest
-    if: success() && needs.build.outputs.version_changed == 'true'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+          
+      - name: Check if version changed
+        id: check_version_changed
+        run: |
+          if git diff HEAD~1 HEAD -- package.json | grep "version"; then
+          # echo "::set-output name=version_changed::true"
+          else
+            echo "::set-output name=version_changed::false"
+          fi
 
       - name: Publish Extension
+        if: steps.check_version_changed.outputs.version_changed == 'true'
         env:
           VSCE_TOKEN: ${{ secrets.SCERET_AZURE_TOKEN }}
         run: |
           echo "Runing Deploy"
-        # npx vsce publish --packagePath ./CPP_Enum_Counter.vsix --pat $VSCE_TOKEN
+          npx vsce publish --packagePath ./CPP_Enum_Counter.vsix --pat $VSCE_TOKEN
