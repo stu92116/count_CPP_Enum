@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      version_changed: ${{ steps.check_version_changed.outputs.version_changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -24,19 +26,20 @@ jobs:
       - name: Build extension
         run: npm run build
         
-      - name: Set VERSION_CHANGED environment variable
+      - name: Check if version changed
+        id: check_version_changed
         run: |
           if git diff HEAD~1 HEAD -- package.json | grep "version"; then
-            echo "VERSION_CHANGED=true" >> $GITHUB_ENV
+            echo "::set-output name=version_changed::true"
           else
-            echo "VERSION_CHANGED=false" >> $GITHUB_ENV
+            echo "::set-output name=version_changed::false"
           fi
 
 
   creating_release:
     needs: build
     runs-on: ubuntu-latest
-    if: success() && env.VERSION_CHANGED == 'true'
+    if: success() && needs.build.outputs.version_changed == 'true'
     steps:
       - name: Package extension
         run: vsce package -o CPP_Enum_Counter.vsix
@@ -68,7 +71,7 @@ jobs:
   deploy:
     needs: [build, creating_release]
     runs-on: ubuntu-latest
-    if: success() && env.VERSION_CHANGED == 'true'
+    if: success() && needs.build.outputs.version_changed == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
