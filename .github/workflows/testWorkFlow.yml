@@ -64,7 +64,7 @@ jobs:
           
       - name: Check if version changed
         id: check_version_changed
-        run: |
+        run:
           versionChanged=$(git diff HEAD~1 HEAD -- package.json | grep "version")
           if [[ -z ${versionChanged} ]]; then
             echo "version_changed=false" >> $GITHUB_ENV
