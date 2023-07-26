@@ -58,7 +58,7 @@ jobs:
         id: check_version_changed
         run: |
           if git diff HEAD~1 HEAD -- package.json | grep "version"; then
-          # echo "::set-output name=version_changed::true"
+            echo "::set-output name=version_changed::true"
           else
             echo "::set-output name=version_changed::false"
           fi
