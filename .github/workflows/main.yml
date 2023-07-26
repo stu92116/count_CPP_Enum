@@ -27,7 +27,9 @@ jobs:
           npm i --save-dev esbuild
 
       - name: Build extension
-        run: npm run build
+        run: |
+          npm run esbuild-base -- --minify  
+          npm run esbuild-base -- --sourcemap
   
       - name: Package extension
         run: vsce package -o CPP_Enum_Counter.vsix
