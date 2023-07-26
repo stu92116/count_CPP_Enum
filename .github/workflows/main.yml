@@ -24,12 +24,13 @@ jobs:
         run: |
           npm install
           npm i -g @vscode/vsce
-          npm i --save-dev esbuild
+          npm i --save-dev webpack webpack-cli
+          npm i --save-dev ts-loader
 
-      - name: Build extension
-        run: |
-          npm run esbuild-base -- --minify  
-          npm run esbuild-base -- --sourcemap
+      # - name: Build extension
+      #   run: |
+      #     npm run esbuild-base -- --minify  
+      #     npm run esbuild-base -- --sourcemap
   
       - name: Package extension
         run: vsce package -o CPP_Enum_Counter.vsix
